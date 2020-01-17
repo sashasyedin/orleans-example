@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "OrleansExample.Silo": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
