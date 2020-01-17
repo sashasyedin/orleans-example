@@ -23,28 +23,28 @@ namespace OrleansExample.Silo
                             .Configure<ClusterOptions>(options =>
                             {
                                 options.ClusterId = "dev";
-                                options.ServiceId = "HelloWorldApp";
+                                options.ServiceId = "orleans-example-app";
                             })
                             .Configure<EndpointOptions>(options =>
                             {
                                 options.AdvertisedIPAddress = IPAddress.Loopback;
-                                //options.GatewayPort = 30000;
-                                //options.SiloPort = 11111;
+                                // options.GatewayPort = 30000;
+                                // options.SiloPort = 11111;
                             })
                             .AddAdoNetGrainStorage("Storage1", options =>
                             {
                                 options.Invariant = "System.Data.SqlClient";
-                                options.ConnectionString = "Data Source=.\\instance4dev;Initial Catalog=ServicePersistence1;Integrated Security=False;User ID=sa;Password=123";
+                                options.ConnectionString = "Server=localhost;Database=Storage1;Trusted_Connection=True;";
                                 options.UseJsonFormat = true;
                             })
                             .AddAdoNetGrainStorage("Storage2", options =>
                             {
                                 options.Invariant = "System.Data.SqlClient";
-                                options.ConnectionString = "Data Source=.\\instance4dev;Initial Catalog=ServicePersistence2;Integrated Security=False;User ID=sa;Password=123";
+                                options.ConnectionString = "Server=localhost;Database=Storage2;Trusted_Connection=True;";
                                 options.UseJsonFormat = true;
                             })
                             .UseTransactions()
-                            //.ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(...).Assembly).WithReferences())
+                            // .ConfigureApplicationParts(parts => parts.AddApplicationPart(typeof(...).Assembly).WithReferences())
                             .ConfigureApplicationParts(parts => parts.AddFromApplicationBaseDirectory())
                             .UseDashboard(options => { });
                     })

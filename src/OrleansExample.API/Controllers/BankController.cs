@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Orleans;
+using OrleansExample.API.Models;
 using OrleansExample.Contracts;
 using System;
 using System.Threading.Tasks;
@@ -44,12 +45,5 @@ namespace OrleansExample.API.Controllers
             var grain = _client.GetGrain<IAtmGrain>(id);
             await grain.Transfer(request.From, request.To, request.Amount);
         }
-    }
-
-    public class TransferMoneyRequest
-    {
-        public Guid From { get; set; }
-        public Guid To { get; set; }
-        public uint Amount { get; set; }
     }
 }

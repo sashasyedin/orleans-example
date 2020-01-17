@@ -2,6 +2,7 @@
 using Orleans.Runtime;
 using Orleans.Transactions.Abstractions;
 using OrleansExample.Contracts;
+using OrleansExample.Grains.DataModels;
 using System;
 using System.Threading.Tasks;
 
@@ -9,48 +10,36 @@ namespace OrleansExample.Grains
 {
     public class AccountGrain : Grain, IAccountGrain
     {
-        private readonly ITransactionalState<AccountState1> _accountState1;
-        private readonly IPersistentState<AccountState2> _accountState2;
+        private readonly ITransactionalState<BalanceState> _balanceState;
+        private readonly IPersistentState<NameState> _nameState;
 
         public AccountGrain(
-            [TransactionalState("accountState1", "Storage1")] ITransactionalState<AccountState1> accountState1,
-            [PersistentState("accountState2", "Storage1")] IPersistentState<AccountState2> accountState2)
+            [TransactionalState("balanceState", "Storage1")] ITransactionalState<BalanceState> balanceState,
+            [PersistentState("nameState", "Storage1")] IPersistentState<NameState> nameState)
         {
-            _accountState1 = accountState1 ?? throw new ArgumentNullException(nameof(accountState1));
-            _accountState2 = accountState2 ?? throw new ArgumentNullException(nameof(accountState2));
+            _balanceState = balanceState ?? throw new ArgumentNullException(nameof(balanceState));
+            _nameState = nameState ?? throw new ArgumentNullException(nameof(nameState));
         }
 
         async Task IAccountGrain.CreateAccount(string name)
         {
-            _accountState2.State.Name = name;
-            await _accountState2.WriteStateAsync();
+            _nameState.State.Name = name;
+            await _nameState.WriteStateAsync();
         }
 
         Task IAccountGrain.Deposit(uint amount)
         {
-            return _accountState1.PerformUpdate(x => x.Balance += amount);
+            return _balanceState.PerformUpdate(x => x.Balance += amount);
         }
 
         Task IAccountGrain.Withdraw(uint amount)
         {
-            return _accountState1.PerformUpdate(x => x.Balance -= amount);
+            return _balanceState.PerformUpdate(x => x.Balance -= amount);
         }
 
         Task<uint> IAccountGrain.GetBalance()
         {
-            return _accountState1.PerformRead(x => x.Balance);
+            return _balanceState.PerformRead(x => x.Balance);
         }
-    }
-
-    [Serializable]
-    public class AccountState1
-    {
-        public uint Balance { get; set; }
-    }
-
-    [Serializable]
-    public class AccountState2
-    {
-        public string Name { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Orleans;
 using Orleans.Runtime;
 using OrleansExample.Contracts;
+using OrleansExample.Grains.DataModels;
 using System;
 using System.Threading.Tasks;
 
@@ -10,8 +11,7 @@ namespace OrleansExample.Grains
     {
         private readonly IPersistentState<AtmState> _atmState;
 
-        public AtmGrain(
-            [PersistentState("atmState", "Storage2")] IPersistentState<AtmState> atmState)
+        public AtmGrain([PersistentState("atmState", "Storage2")] IPersistentState<AtmState> atmState)
         {
             _atmState = atmState ?? throw new ArgumentNullException(nameof(atmState));
         }
@@ -37,11 +37,5 @@ namespace OrleansExample.Grains
             _atmState.State.Name = name;
             await _atmState.WriteStateAsync();
         }
-    }
-
-    [Serializable]
-    public class AtmState
-    {
-        public string Name { get; set; }
     }
 }
